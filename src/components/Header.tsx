@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cn } from './../lib/utils'
+import { cn } from '../lib/utils'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,6 +8,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from './ui/navigation-menu'
+import { Link } from 'react-router-dom'
 
 export default function Tabnavbar() {
   return (
@@ -25,9 +26,9 @@ export default function Tabnavbar() {
                   <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
                       <NavigationMenuLink asChild>
-                        <a
+                        <Link
                           className="hover:bg-gray-100 rounded-2xl bg-gray-50 from-muted/50 to-muted flex h-full w-full select-none flex-col justify-end bg-gradient-to-b p-6 no-underline outline-none focus:shadow-md"
-                          href="#"
+                          to="/sorting/quick-sort"
                         >
                           <div className="mb-2 mt-4 text-lg font-medium">
                             Quick Sort
@@ -35,15 +36,15 @@ export default function Tabnavbar() {
                           <p className="text-muted-foreground text-sm leading-tight">
                             Time Complexity <strong>O(n.log(n))</strong>
                           </p>
-                        </a>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="#" title="Merge Sort">
+                    <ListItem href="/sorting/merge-sort" title="Merge Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity <strong>O(n.log(n))</strong>
                       </p>
                     </ListItem>
-                    <ListItem href="#" title="Bubble Sort">
+                    <ListItem href="/sorting/bubble-sort" title="Bubble Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity{' '}
                         <strong>
@@ -51,7 +52,7 @@ export default function Tabnavbar() {
                         </strong>
                       </p>
                     </ListItem>
-                    <ListItem href="#" title="Selection Sort">
+                    <ListItem href="/sorting/selection-sort" title="Selection Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity{' '}
                         <strong>

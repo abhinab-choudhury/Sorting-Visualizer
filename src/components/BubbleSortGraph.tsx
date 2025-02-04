@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid } from 'recharts'
 
 import {
   Card,
@@ -17,7 +17,7 @@ import {
   ChartTooltipContent,
 } from './ui/chart'
 import { Button } from './ui/button'
-import { CirclePause, CirclePlay, RotateCcw } from 'lucide-react'
+import { CirclePause, RotateCcw } from 'lucide-react'
 
 export const description = 'An interactive bar chart'
 
@@ -32,11 +32,12 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function Graph() {
-  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>('height')
+  const [activeChart] = React.useState<keyof typeof chartConfig>('height')
   const [pausePlayBtnVisible, setPausePlayBtnVisible] = React.useState(false)
   const [play, setPlay] = React.useState(false);
   const [data, setData] = React.useState<{ "height":number }[]>([])
   const [comparisons, setComparisons] = React.useState(0);
+  const [swaps, setSwap] = React.useState(0);
   
   const playRef = React.useRef<boolean>(false);
   
@@ -44,47 +45,70 @@ export function Graph() {
     generateRandom();
   }, []); 
   
-  // Reset & Generate Random Heights
   const generateRandom = () => {
-    setPlay(false); // Stop sorting if running
+    setPlay(false);
+    playRef.current = false;
     const newData = Array.from({ length: 100 }, () => ({
       height: Math.floor(Math.random() * 500) + 1,
     }));
     setData(newData);
     setComparisons(0);
+    setPausePlayBtnVisible(false);
   };
   
 
   const TogglePlay = () => {
-    setPlay((prev) => !prev);
+    setPlay((prev) => { 
+      playRef.current = !playRef.current;
+      return !prev
+    });
   };
 
   const BubbleSort = async () => {
-    console.log("Sorting Started")
-    
+    // Check if the array is already sorted
+    const isAlreadySorted = data.every((val, i, arr) => 
+      i === 0 || arr[i - 1].height <= val.height
+    );
+  
+    if (isAlreadySorted) {
+      generateRandom();
+      return;
+    }
+  
+    console.log("Bubble Sort Started");
+  
     const n = data.length;
     const sortedData = [...data];
-    
-    
-    setPausePlayBtnVisible(true); // Updated the UI for the Control Buttons
-    setPlay(true); // Ensures the Playing is True
-    for (let i = 0; i < n; i++) {
-      for(let j = 0;j < n - i - 1;j++) {
-        if(sortedData[j].height > sortedData[j + 1].height) {
+  
+    setPausePlayBtnVisible(true);
+    playRef.current = true;
+    setPlay(true);
+  
+    for (let i = 0; i < n - 1 && playRef.current; i++) {
+      let swapped = false; // Track if a swap occurred
+  
+      for (let j = 0; j < n - i - 1 && playRef.current; j++) {
+        setComparisons((prev) => prev + 1);
+  
+        if (sortedData[j].height > sortedData[j + 1].height) {
           [sortedData[j], sortedData[j + 1]] = [sortedData[j + 1], sortedData[j]];
-
+          swapped = true;
+          setSwap((prev) => prev + 1);
+  
           await new Promise((resolve) => setTimeout(resolve, 15));
-          setComparisons((prev) => prev + 1)
-          setData([...sortedData]);
+          setData([...sortedData]); // Update state smoothly
         }
-
-        // If play was set to false during sorting, stop immediately
-        if (!play) return;
       }
+  
+      // If no swaps happened, the array is sorted, exit early
+      if (!swapped) break;
     }
-    setPlay(false) // Ensures the Playing is False
-    setPausePlayBtnVisible(false); // Updated the UI for the Control Buttons
+  
+    playRef.current = false;
+    setPlay(false);
+    setPausePlayBtnVisible(false);
   };
+  
 
   return (
     <Card className='h-full w-full mx-auto m-2'>
@@ -100,38 +124,27 @@ export function Graph() {
               className="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
             >
               <div className='flex flex-row gap-1 h-[36px]'>
-                {play ? (
-                  <Button variant={'outline'} onClick={TogglePlay} className={`${!pausePlayBtnVisible ? "hidden" : ""} text-black border-black p-2 w-full active:scale-95 active:transition-all`}>
-                    <CirclePause />
-                  </Button>
-                ) : (
-                  <Button variant={'outline'} onClick={TogglePlay} className={`${!pausePlayBtnVisible ? "hidden" : ""} text-black border-black p-2 w-full active:scale-95 active:transition-all`}>
-                    <CirclePlay />
-                  </Button>
-                )} 
-                {pausePlayBtnVisible ? (
-                  <Button variant={'outline'} disabled onClick={generateRandom} className="text-black border-black w-full active:scale-95 active:transition-all">
-                    <RotateCcw />
-                  </Button>
-                ) : (
-                  <Button variant={'outline'} onClick={generateRandom} className="text-black border-black w-full active:scale-95 active:transition-all">
-                    <RotateCcw />
-                  </Button>
-                )}
+                <Button variant={'outline'} onClick={TogglePlay} className={`${!pausePlayBtnVisible ? 'hidden' : ''} text-black border-black p-2 w-full active:scale-95 active:transition-all`}>
+                  { play && <CirclePause /> }
+                </Button>
+                <Button variant={'outline'} onClick={generateRandom} disabled={pausePlayBtnVisible} className="text-black border-black w-full active:scale-95 active:transition-all">
+                  <RotateCcw />
+                </Button>
               </div>
               <div className='flex flex-col'>
                 <span className="text-muted-foreground text-xs">
-                  Total Comparisons: <span className='font-extrabold text-lg'>{comparisons}</span>
+                  Total Comparisons: <span className="font-extrabold text-lg">{comparisons}</span>
                 </span>
-                {play ? (
-                  <Button disabled variant={'outline'} onClick={BubbleSort}>
-                    Start
-                  </Button>
-                ) : (
-                  <Button variant={'outline'} onClick={BubbleSort}>
-                    Start
-                  </Button>
-                )}
+                <span className="text-muted-foreground text-xs">
+                  Total Swaps: <span className="font-extrabold text-lg">{swaps}</span>
+                </span>
+                <Button disabled={play} variant={'outline'} onClick={() => {
+                  playRef.current = true; 
+                  setPlay(true);              
+                  BubbleSort();
+                }}>
+                  Start
+                </Button>
               </div>
             </div>
         </div>
@@ -150,13 +163,6 @@ export function Graph() {
             }}
           >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-            />
             <ChartTooltip
               content={
                 <ChartTooltipContent />

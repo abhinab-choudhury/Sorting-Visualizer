@@ -1,13 +1,5 @@
-import Footer from '../components/footer'
-import Tabnavbar from '../components/header'
-import Visualizer from '../components/visualizer'
+import { Navigate } from "react-router-dom"
 
-export const Index = () => {
-  return (
-    <main className="min-h-screen">
-      <Tabnavbar />
-      <Visualizer />
-      <Footer />
-    </main>
-  )
+export default function Home() {
+    return <Navigate to={"/sorting/bubble-sort"} replace />
 }
