@@ -9,11 +9,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={'/'} element={<Home />} />
-        <Route path={'/sorting/bubble-sort'} element={<BubbleSort />} />
-        <Route path={'/sorting/selection-sort'} element={<SelectionSort />} />
-        <Route path={'/sorting/quick-sort'} element={<QuickSort />} />
-        <Route path={'/sorting/merge-sort'} element={<MergeSort />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/bubble-sort'  element={<BubbleSort />} />
+        <Route path='/selection-sort' element={<SelectionSort />} />
+        <Route path='/quick-sort' element={<QuickSort />} />
+        <Route path='/merge-sort' element={<MergeSort />} />
       </Routes>
     </BrowserRouter>
   )

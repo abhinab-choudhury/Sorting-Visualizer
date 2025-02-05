@@ -28,7 +28,7 @@ export default function Tabnavbar() {
                       <NavigationMenuLink asChild>
                         <Link
                           className="hover:bg-gray-100 rounded-2xl bg-gray-50 from-muted/50 to-muted flex h-full w-full select-none flex-col justify-end bg-gradient-to-b p-6 no-underline outline-none focus:shadow-md"
-                          to="/sorting/quick-sort"
+                          to="/quick-sort"
                         >
                           <div className="mb-2 mt-4 text-lg font-medium">
                             Quick Sort
@@ -39,12 +39,12 @@ export default function Tabnavbar() {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    <ListItem href="/sorting/merge-sort" title="Merge Sort">
+                    <ListItem to="/merge-sort" title="Merge Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity <strong>O(n.log(n))</strong>
                       </p>
                     </ListItem>
-                    <ListItem href="/sorting/bubble-sort" title="Bubble Sort">
+                    <ListItem to="/bubble-sort" title="Bubble Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity{' '}
                         <strong>
@@ -52,7 +52,7 @@ export default function Tabnavbar() {
                         </strong>
                       </p>
                     </ListItem>
-                    <ListItem href="/sorting/selection-sort" title="Selection Sort">
+                    <ListItem to="/selection-sort" title="Selection Sort">
                       <p className="text-muted-foreground text-sm leading-tight">
                         Time Complexity{' '}
                         <strong>
@@ -73,12 +73,12 @@ export default function Tabnavbar() {
 
 const ListItem = React.forwardRef<
   React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
+  React.ComponentPropsWithoutRef<typeof Link>
 >(({ className, title, children, ...props }, ref) => {
   return (
     <li className="rounded-lg">
       <NavigationMenuLink asChild>
-        <a
+        <Link
           ref={ref}
           className={cn(
             'hover:bg-gray-100 bg-gray-50 hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors',
@@ -90,7 +90,7 @@ const ListItem = React.forwardRef<
           <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
             {children}
           </p>
-        </a>
+        </Link>
       </NavigationMenuLink>
     </li>
   )

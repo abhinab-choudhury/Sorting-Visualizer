@@ -31,7 +31,7 @@ const chartConfig = {
   },
   height: {
     label: 'Heights',
-    color: 'hsl(var(--chart-4))',
+    color: 'hsl(var(--chart-6))',
   },
 } satisfies ChartConfig
 
